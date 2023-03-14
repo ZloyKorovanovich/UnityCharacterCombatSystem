@@ -91,18 +91,23 @@ public struct MoverControllerOtputs
 
     private float _movingMagnitude;
 
+    private MoverOutputs _moverOutput;
+
 
     public Vector3 Position => _position;
     public Vector3 EulerAngles => _eulerAngles;
 
     public float MovingMagnitude => _movingMagnitude;
 
+    public MoverOutputs MoverOutput => _moverOutput;
 
-    public MoverControllerOtputs(Vector3 position, Vector3 eulerAngles, float movingMagnitude)
+
+    public MoverControllerOtputs(Vector3 position, Vector3 eulerAngles, float movingMagnitude, MoverOutputs moverOutput)
     {
         _position = position;
         _eulerAngles = eulerAngles;
         _movingMagnitude = movingMagnitude;
+        _moverOutput = MoverOutput;
     }
 }
 
