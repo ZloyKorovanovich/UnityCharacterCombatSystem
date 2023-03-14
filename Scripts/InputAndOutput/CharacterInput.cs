@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class CharacterInput
 {
-    private MoverInputs _moverInputs;
+    private MoverControllerInputs _moverInputs;
 
-    public MoverInputs GetMoverInputs()
+    public MoverControllerInputs GetMoverInputs()
     {
         return _moverInputs;
     }

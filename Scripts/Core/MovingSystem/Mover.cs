@@ -10,24 +10,27 @@ public class Mover
 
     private Animator _animator;
 
+    private IKLookWeight _lookWeight;
+
     private float _sensetivity;
     private float _luft;
 
     private bool _isRotating;
 
 
-    public Mover(Animator animator, float sensetivity, float luft)
+    public Mover(Animator animator, float sensetivity, float luft, IKLookWeight lookWeight)
     {
         _animator = animator;
         _sensetivity = sensetivity;
         _luft = luft;
+        _lookWeight = lookWeight;
     }
 
-
-    public void Move(Vector3 axis, float deltaTime, Transform body, Vector3 target)
+    public void Move(MoverInputs inputs, out MoverOutputs outputs)
     {
-        SetAnimatorAxisStats(axis, deltaTime, _sensetivity);
-        SetMovement(body, target, axis, deltaTime, _sensetivity, _luft);
+        SetAnimatorAxisStats(inputs.Axis, inputs.DeltaTime, _sensetivity);
+        SetMovement(inputs.BodyTransform, inputs.Target, inputs.Axis, inputs.DeltaTime, _sensetivity, _luft);
+        outputs = new MoverOutputs(_isRotating);
     }
 
     private void SetAnimatorAxisStats(Vector3 axis, float deltaTime, float sensetivity)
@@ -48,7 +51,7 @@ public class Mover
 
     private void SetLook(Vector3 target)
     {
-        _animator.SetLookAtWeight(1f, 0.7f, 0.9f, 1f, 1f);
+        _animator.SetLookAtWeight(_lookWeight.Weight, _lookWeight.BodyWeight, _lookWeight.HeadWeight, _lookWeight.EyesWeight, _lookWeight.ClampWeight);
         _animator.SetLookAtPosition(target);
     }
 
@@ -82,42 +85,38 @@ public class Mover
     }
 }
 
-
 public struct MoverInputs
 {
-    private Vector3 _inputAxis;
-    private Vector3 _targetPosition;
+    private Transform _bodyTransform;
+    private Vector3 _axis;
+    private Vector3 _target;
+    private float _deltaTime;
+
+    public Transform BodyTransform => _bodyTransform;
+    public Vector3 Axis => _axis;
+    public Vector3 Target => _target;
+    public float DeltaTime => _deltaTime;
 
 
-    public Vector3 InputAxis => _inputAxis;
-    public Vector3 TargetPosition => _targetPosition;
-
-
-    public MoverInputs(Vector3 inputAxis, Vector3 targetPosition)
+    public MoverInputs(Transform bodyTransform, Vector3 axis, Vector3 target, float deltaTime)
     {
-        _inputAxis = inputAxis;
-        _targetPosition = targetPosition;
+        _bodyTransform = bodyTransform;
+        _axis = axis;
+        _target = target;
+        _deltaTime = deltaTime;
     }
 }
 
-public struct MoverOtputs
+public struct MoverOutputs
 {
-    private Vector3 _position;
-    private Vector3 _eulerAngles;
+    private bool _rotating;
 
-    private float _movingMagnitude;
-
-
-    public Vector3 Position => _position;
-    public Vector3 EulerAngles => _eulerAngles;
-
-    public float MovingMagnitude => _movingMagnitude;
+    public bool Rotating => _rotating;
 
 
-    public MoverOtputs(Vector3 position, Vector3 eulerAngles, float movingMagnitude)
+    public MoverOutputs(bool rotating)
     {
-        _position = position;
-        _eulerAngles = eulerAngles;
-        _movingMagnitude = movingMagnitude;
+        _rotating = rotating;
     }
 }
+

@@ -12,7 +12,7 @@ public class MovingController : ControllerAbstract
     private float _luft = 60f;
     //LookWeight (weight, bodyWeight, headWeight)
     [SerializeField]
-    private Vector3 _animatorIkLookWeight = new Vector3(1f, 0.1f, 0.7f);
+    private IKLookWeight _animatorIkLookWeight = new IKLookWeight(1f, 0.7f, 0.9f, 1f, 1f);
 
     //PhysicalComponents
     private Animator _animator;
@@ -22,10 +22,10 @@ public class MovingController : ControllerAbstract
     private Mover _mover;
 
     //UpdatingInputs
-    private MoverInputs _inputs;
+    private MoverControllerInputs _inputs;
 
     //UpdatingOutputs
-    private MoverOtputs _outputs;
+    private MoverControllerOtputs _outputs;
 
 
     private Vector3 _lastFramePosition;
@@ -35,7 +35,7 @@ public class MovingController : ControllerAbstract
     {
         _animator = GetComponent<Animator>();
         _characterController = GetComponent<CharacterController>();
-        _mover = new Mover(_animator, _sensetivity, _luft);
+        _mover = new Mover(_animator, _sensetivity, _luft, _animatorIkLookWeight);
 
         _lastFramePosition = transform.position;
     }
@@ -43,9 +43,7 @@ public class MovingController : ControllerAbstract
     private void OnAnimatorIK(int layerIndex)
     {
         _characterController.Move(Physics.gravity * Time.deltaTime);
-        _mover.Move(_inputs.InputAxis, Time.deltaTime, transform, _inputs.TargetPosition);
-        _animator.SetLookAtWeight(_animatorIkLookWeight.x, _animatorIkLookWeight.y, _animatorIkLookWeight.z);
-        _animator.SetLookAtPosition(_inputs.TargetPosition);
+        _mover.Move(new MoverInputs(transform, _inputs.InputAxis, _inputs.TargetPosition, Time.deltaTime), out _outputs.);
 
         CalculateOutputs();
     }
@@ -64,7 +62,71 @@ public class MovingController : ControllerAbstract
 
     private void CalculateOutputs()
     {
-        _outputs = new MoverOtputs(transform.position, transform.eulerAngles, Vector3.SqrMagnitude(transform.position - _lastFramePosition / Time.deltaTime));
+        _outputs = new MoverControllerOtputs(transform.position, transform.eulerAngles, Vector3.SqrMagnitude(transform.position - _lastFramePosition / Time.deltaTime));
         _lastFramePosition = transform.position;
+    }
+}
+
+public struct MoverControllerInputs
+{
+    private Vector3 _inputAxis;
+    private Vector3 _targetPosition;
+
+
+    public Vector3 InputAxis => _inputAxis;
+    public Vector3 TargetPosition => _targetPosition;
+
+
+    public MoverControllerInputs(Vector3 inputAxis, Vector3 targetPosition)
+    {
+        _inputAxis = inputAxis;
+        _targetPosition = targetPosition;
+    }
+}
+
+public struct MoverControllerOtputs
+{
+    private Vector3 _position;
+    private Vector3 _eulerAngles;
+
+    private float _movingMagnitude;
+
+
+    public Vector3 Position => _position;
+    public Vector3 EulerAngles => _eulerAngles;
+
+    public float MovingMagnitude => _movingMagnitude;
+
+
+    public MoverControllerOtputs(Vector3 position, Vector3 eulerAngles, float movingMagnitude)
+    {
+        _position = position;
+        _eulerAngles = eulerAngles;
+        _movingMagnitude = movingMagnitude;
+    }
+}
+
+public struct IKLookWeight
+{
+    private float _weight;
+    private float _bodyWeight;
+    private float _headWeight;
+    private float _eyesWeight;
+    private float _clampWeight;
+
+    public float Weight => _weight;
+    public float BodyWeight => _bodyWeight;
+    public float HeadWeight => _headWeight;
+    public float EyesWeight => _eyesWeight;
+    public float ClampWeight => _clampWeight;
+
+
+    public IKLookWeight(float weight, float bodyWeight, float headWeight, float eyesWeight, float clampWeight)
+    {
+        _weight = weight;
+        _bodyWeight = bodyWeight;
+        _headWeight = headWeight;
+        _eyesWeight = eyesWeight;
+        _clampWeight = clampWeight;
     }
 }
