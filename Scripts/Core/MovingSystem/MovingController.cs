@@ -29,6 +29,7 @@ public class MovingController : ControllerAbstract
 
 
     private Vector3 _lastFramePosition;
+    private MoverOutputs _moverOutput;
 
 
     private void Start()
@@ -43,7 +44,7 @@ public class MovingController : ControllerAbstract
     private void OnAnimatorIK(int layerIndex)
     {
         _characterController.Move(Physics.gravity * Time.deltaTime);
-        _mover.Move(new MoverInputs(transform, _inputs.InputAxis, _inputs.TargetPosition, Time.deltaTime), out _outputs.);
+        _mover.Move(new MoverInputs(transform, _inputs.InputAxis, _inputs.TargetPosition, Time.deltaTime), out _moverOutput);
 
         CalculateOutputs();
     }
@@ -62,7 +63,7 @@ public class MovingController : ControllerAbstract
 
     private void CalculateOutputs()
     {
-        _outputs = new MoverControllerOtputs(transform.position, transform.eulerAngles, Vector3.SqrMagnitude(transform.position - _lastFramePosition / Time.deltaTime));
+        _outputs = new MoverControllerOtputs(transform.position, transform.eulerAngles, Vector3.SqrMagnitude(transform.position - _lastFramePosition / Time.deltaTime), _moverOutput);
         _lastFramePosition = transform.position;
     }
 }
