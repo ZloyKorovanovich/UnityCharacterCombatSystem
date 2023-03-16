@@ -5,7 +5,6 @@ public class Weapon
     private LayerMask _attackableLayer;
     private float _damage;
     private DamageClaculator _damageCalculator;
-    
 
     public LayerMask AttackableLayer => _attackableLayer;
     public float Damage => _damage;

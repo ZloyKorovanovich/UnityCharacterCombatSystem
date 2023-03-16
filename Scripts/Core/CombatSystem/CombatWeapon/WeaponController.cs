@@ -15,7 +15,7 @@ public class WeaponController : MonoBehaviour
         _currentAttack.SetStats(new AttackInputs(_weapon, this));
     }
 
-    public void SetAttackResults(AttackOutputs outputs)
+    public void SetAttackResults(AttackOutput outputs)
     {
 
     }

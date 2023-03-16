@@ -108,7 +108,7 @@ public struct MoverControllerOtputs
         _position = position;
         _eulerAngles = eulerAngles;
         _movingMagnitude = movingMagnitude;
-        _moverOutput = MoverOutput;
+        _moverOutput = moverOutput;
     }
 }
 
