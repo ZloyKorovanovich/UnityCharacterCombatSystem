@@ -2,21 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponController : MonoBehaviour
+public abstract class WeaponController : MonoBehaviour
 {
-    private Weapon _weapon;
-    private WeaponAttack _currentAttack;
-    private Transform _weaponTransform;
+    public abstract void SetAttackInputs(WeaponInputs inputs);
+}
 
-    public void SetAttack()
+public struct WeaponInputs
+{
+    private bool _attack;
+    private CombatController _owner;
+
+    public bool Attack => _attack;
+    public CombatController Owner => _owner;
+
+
+    public WeaponInputs(bool attack, CombatController owner)
     {
-        if (!_currentAttack)
-            _currentAttack = _weaponTransform.gameObject.AddComponent<WeaponAttack>();
-        _currentAttack.SetStats(new AttackInputs(_weapon, this));
+        _attack = attack;
+        _owner = owner;
     }
+}
 
-    public void SetAttackResults(AttackOutput outputs)
+public struct WeaponOutputs
+{
+    private bool _killed;
+    private float _damage;
+
+    public bool Killed => _killed;
+    public float Damage => _damage;
+
+
+    public WeaponOutputs(bool killed, float damage)
     {
-
+        _killed = killed;
+        _damage = damage;
     }
 }

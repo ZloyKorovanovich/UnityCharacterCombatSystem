@@ -7,8 +7,6 @@ public class CombatController : MonoBehaviour
 
     public Health CharacterHealth => _characterHealth;
 
-    private bool 
-
     public void CheckHealth()
     {
         
@@ -17,6 +15,11 @@ public class CombatController : MonoBehaviour
     public void SetAttackOutputs()
     {
 
-    };
+    }
+}
+
+public struct CombatControllerInputs
+{
+    private bool _attack;
 }
 
